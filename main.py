@@ -1,34 +1,46 @@
-import logging
-import logging.handlers
-import os
-
+import cot_reports as cot
+import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
 import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import time
+import random
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger_file_handler = logging.handlers.RotatingFileHandler(
-    "status.log",
-    maxBytes=1024 * 1024,
-    backupCount=1,
-    encoding="utf8",
-)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-logger_file_handler.setFormatter(formatter)
-logger.addHandler(logger_file_handler)
+import seaborn as sns
+import matplotlib.pyplot as plt
+import requests
+import json
+import datetime;
 
-try:
-    SOME_SECRET = os.environ["SOME_SECRET"]
-except KeyError:
-    SOME_SECRET = "Token not available!"
-    #logger.info("Token not available!")
-    #raise
+def getData():
+    url = 'https://c.fxssi.com/api/current-ratios?filter=AUDJPY&rand=0.5203286106651004&user_id=0'
+
+    # Make a request to the URL
+    response = requests.get(url)
+    data = response.json()
+
+    return data
 
 
-if __name__ == "__main__":
-    logger.info(f"Token value: {SOME_SECRET}")
 
-    r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
-    if r.status_code == 200:
-        data = r.json()
-        temperature = data["forecast"]["temp"]
-        logger.info(f'Weather in Berlin: {temperature}')
+data = getData()
+
+timestamp =  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+d = {}
+
+for i in data["pairs"].keys():
+    d[i] = {}
+    d[i]["timestamp"] = timestamp
+    d[i]["long"] = float(data["pairs"][i]["average"])
+    d[i]["short"] = 100 - float(data["pairs"][i]["average"])
+
+print(d)
+
+with open("retail_data.json","r") as p:
+    data = json.load(p)
+
+with open("retail_data.json","w") as p:
+    data.append(d)
+    json.dump(data, p)
