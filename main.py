@@ -23,8 +23,6 @@ def getData():
 
     return data
 
-
-
 data = getData()
 
 timestamp =  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -38,9 +36,6 @@ for i in data["pairs"].keys():
 
 print(d)
 
-with open("retail_data.json","r") as p:
-    data = json.load(p)
-
-with open("retail_data.json","w") as p:
-    data.append(d)
-    json.dump(data, p)
+with open("retail_data.txt","a+") as p:
+    p.write(json.dumps(data))
+    p.write("\n")
