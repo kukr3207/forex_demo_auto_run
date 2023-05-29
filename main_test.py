@@ -36,6 +36,10 @@ for i in data["pairs"].keys():
 
 print(d)
 
-with open("retail_data.txt","a+") as p:
-    p.write(json.dumps(d))
-    p.write("\n")
+with open("retail_data.json","r") as p1:
+    data = json.loads(p1)
+   
+data.append(d)
+
+with open("retail_data.json","w") as p:
+    p.write(json.dumps(data))
