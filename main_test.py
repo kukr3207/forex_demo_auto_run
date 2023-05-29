@@ -37,9 +37,9 @@ for i in data["pairs"].keys():
 print(d)
 
 with open("retail_data.json","r") as p1:
-    data = json.loads(p1)
+    data = json.load(p1)
    
 data.append(d)
 
 with open("retail_data.json","w") as p:
-    p.write(json.dumps(data))
+    json.dump(data,p,indent=4)
